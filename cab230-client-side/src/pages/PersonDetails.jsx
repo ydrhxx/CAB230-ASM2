@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
+import '../components/PersonDetails.css'; 
 import Chart from 'chart.js/auto'; // Required for Bar chart setup
 
 const PersonDetails = () => {
@@ -102,15 +103,14 @@ const PersonDetails = () => {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      {/* Person info */}
-      <h2>{person.name}</h2>
-      <p>{person.birthYear || 'N/A'} - {person.deathYear || 'Present'}</p>
+    <div className="person-details-container">
+        <h2>{person.name}</h2>
+        <p>{person.birthYear || 'N/A'} - {person.deathYear || 'Present'}</p>
 
       {/* Role list table */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
+      <table className="person-role-table">
         <thead>
-          <tr style={{ backgroundColor: '#003366', color: 'white' }}>
+          <tr>
             <th>Role</th>
             <th>Movie</th>
             <th>Characters</th>
@@ -135,32 +135,24 @@ const PersonDetails = () => {
       </table>
 
       {/* Pagination buttons */}
-      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+        <div className="person-pagination">
         {Array.from({ length: totalPages }, (_, i) => (
-          <button
+            <button
             key={i + 1}
+            className={currentPage === i + 1 ? 'active' : ''}
             onClick={() => setCurrentPage(i + 1)}
-            style={{
-              margin: '0 5px',
-              padding: '0.5rem 1rem',
-              backgroundColor: currentPage === i + 1 ? '#003366' : '#ccc',
-              color: currentPage === i + 1 ? 'white' : 'black',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
+            >
             {i + 1}
-          </button>
+            </button>
         ))}
-      </div>
+        </div>
 
-      {/* Chart display */}
-      <div style={{ width: '100%', height: '30%', marginTop: '2rem' }}>
+        <div className="person-chart-container">
         <h3>IMDb Ratings at a Glance</h3>
         <Bar data={chartData} />
-      </div>
+        </div>
     </div>
-  );
+    );
 };
 
 export default PersonDetails;

@@ -15,7 +15,30 @@
     width: 100%;
     border-collapse: collapse;
   }
+  .movie-table th, .movie-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+  }
   
+  .movie-table th {
+    background-color: #3f51b5;
+    color: white;
+  }
+  
+  .movie-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .movie-table a {
+    color: #0b72b9;
+    text-decoration: none;
+  }
+  
+  .movie-table a:hover {
+    text-decoration: underline;
+  }
   thead {
     background-color: #004080;
     color: white;

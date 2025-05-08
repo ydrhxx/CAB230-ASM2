@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import Navbar from '../components/Navbar'; // Navbar must be present and correctly exported
-import '../components/RegisterPage.css'; // Make sure the CSS path is correct
+import '../components/RegisterPage.css';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
-  // Form state
+  // Form input state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
 
-  // Error and message state
+  // UI feedback state
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  // Handle register button submit
+  // Handle form submission
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
+    setMessage('');
 
-    // Check if passwords match
+    // Simple client-side check
     if (password !== confirm) {
       setError('Passwords do not match.');
       return;
@@ -35,26 +36,24 @@ const RegisterPage = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || 'Registration failed');
+        setError(data.message || 'Registration failed.');
       } else {
         setMessage('Registration successful!');
-        setTimeout(() => navigate('/login'), 1500);
+        setTimeout(() => navigate('/login'), 1500); // Redirect after success
       }
     } catch (err) {
+      console.error('Registration error:', err);
       setError('Something went wrong.');
-      console.error(err);
     }
   };
 
   return (
     <>
-      <Navbar />
 
       <div className="register-page">
         <h2>Create Your Account</h2>
         <form onSubmit={handleRegister}>
-
-          {/* Email Input */}
+          {/* Email */}
           <label>Email</label>
           <input
             type="email"
@@ -63,22 +62,22 @@ const RegisterPage = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/* Password Input */}
+          {/* Password */}
           <label>Password</label>
           <input
             type="password"
-            placeholder="at least 8 characters"
+            placeholder="At least 8 characters"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <div className="password-info">
-            <img src="/images/info-icon.png" alt="info" className="info-icon" />
-            <span>Passwords must be at least 8 characters.</span>
+            <img src="../images/info-icon.png" alt="info" className="info-icon" />
+            <span>Password must be at least 8 characters long.</span>
           </div>
 
-          {/* Confirm Password Input */}
-          <label>Re-enter password</label>
+          {/* Confirm password */}
+          <label>Confirm Password</label>
           <input
             type="password"
             required
@@ -86,15 +85,15 @@ const RegisterPage = () => {
             onChange={(e) => setConfirm(e.target.value)}
           />
 
-          {/* Submit Button */}
-          <button type="submit" className="blue-button">Create account</button>
+          {/* Submit */}
+          <button type="submit" className="blue-button">Create Account</button>
 
-          {/* Error and success messages */}
+          {/* Feedback */}
           {error && <p className="error-msg">{error}</p>}
           {message && <p className="success-msg">{message}</p>}
         </form>
 
-        {/* Sign-in link */}
+        {/* Redirect to login */}
         <p className="login-link">
           Already have an account? <Link to="/login">Sign in</Link>
         </p>

@@ -45,7 +45,7 @@ const MovieDetails = () => {
             <p><strong>Genres:</strong> {movie.genres?.map((g, i) => (
               <span key={i} className={`genre-tag genre-${g.toLowerCase()}`}>{g}</span>
             ))}</p>
-            <p><strong>Country:</strong> <span className="flag">🇺🇸</span> {movie.country}</p>
+            <p><strong>Country:</strong> <span className="flag"></span> {movie.country}</p>
             <p><strong>Box Office:</strong> ${movie.boxoffice?.toLocaleString()}</p>
             <p className="movie-plot"><em>{movie.plot}</em></p>
           </div>

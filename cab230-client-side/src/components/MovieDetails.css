@@ -75,19 +75,30 @@
     border-left: 4px solid #ccc;
   }
   
-  .movie-table-container {
+
+/* New wrapper to make table and rating box sit side-by-side */
+.info-layout {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
     margin-top: 20px;
   }
   
-  
-  .ratings-box {
-    font-size: 14px;
-    color: #333;
-    min-width: 180px;
+  /* Optional: make the table take up more space than ratings */
+  .principals-table {
+    flex: 2;
+    border-collapse: collapse;
   }
   
+  .ratings-box {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+    padding: 20px;
+    background-color: rgba(38, 183, 250, 0.1); /* Transparent blue background */
+    border-radius: 8px;
+  }
   .ratings-box strong {
     display: block;
     margin-top: 10px;

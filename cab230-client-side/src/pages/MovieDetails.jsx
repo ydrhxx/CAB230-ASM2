@@ -1,7 +1,6 @@
 // src/pages/MovieDetails.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import '../components/MovieDetails.css';
 
 const MovieDetails = () => {
@@ -35,7 +34,6 @@ const MovieDetails = () => {
 
   return (
     <>
-      <Navbar />
       <div className="movie-details-container">
         <div className="movie-header">
           <div className="movie-info">
@@ -54,31 +52,32 @@ const MovieDetails = () => {
           </div>
         </div>
 
+        <div className="info-layout">
         <table className="principals-table">
-          <thead>
+            <thead>
             <tr>
-              <th>Role</th>
-              <th>Name</th>
-              <th>Characters</th>
+                <th>Role</th>
+                <th>Name</th>
+                <th>Characters</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {movie.principals?.map(p => (
-              <tr key={p.id}>
+                <tr key={p.id}>
                 <td>{p.category.charAt(0).toUpperCase() + p.category.slice(1)}</td>
                 <td><Link to={`/people/${p.id}`}>{p.name}</Link></td>
                 <td>{p.characters?.join(', ') || '-'}</td>
-              </tr>
+                </tr>
             ))}
-          </tbody>
+            </tbody>
         </table>
 
         <div className="ratings-box">
-          <p><strong>Internet Movie Database:</strong> {ratings['Internet Movie Database'] || '-'}</p>
-          <p><strong>Rotten Tomatoes:</strong> {ratings['Rotten Tomatoes'] || '-'}</p>
-          <p><strong>Metacritic:</strong> <strong>{ratings['Metacritic'] || '-'}</strong></p>
+            <p><strong>Internet Movie Database:</strong> {ratings['Internet Movie Database'] || '-'}</p>
+            <p><strong>Rotten Tomatoes:</strong> {ratings['Rotten Tomatoes'] || '-'}</p>
+            <p><strong>Metacritic:</strong> <strong>{ratings['Metacritic'] || '-'}</strong></p>
         </div>
-
+        </div>
         <footer className="footer">
           <p>All data is from IMDB, Metacritic and RottenTomatoes.</p>
           <p>&copy; 2025 Firstname Lastname</p>

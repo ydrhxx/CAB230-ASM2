@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../components/RegisterPage.css';
+import infoIcon from '../images/info-icon.png';
 
 const RegisterPage = () => {
   const navigate = useNavigate();

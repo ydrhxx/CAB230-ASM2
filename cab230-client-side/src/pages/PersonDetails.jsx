@@ -119,7 +119,7 @@ const PersonDetails = () => {
         </thead>
         <tbody>
           {paginatedRoles.map((role, index) => (
-            <tr key={index} style={{ textAlign: 'center' }}>
+            <tr>
               <td>{role.category}</td>
               <td>
                 {/* Fix: Link properly to /movies/:imdbID instead of /movie */}

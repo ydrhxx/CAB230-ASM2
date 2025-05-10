@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import '../components/LandingPage.css';
-import landingImage from '../images/LandingPage.png';
+import landingImage from '../images/LandingPage.png'; 
 
 const LandingPage = () => {
-  // Store a list of basic movie data from /search
-  const [movieList, setMovieList] = useState([]);
+  const [movieList, setMovieList] = useState([]);        // Stores initial basic movie list
+  const [movieDetails, setMovieDetails] = useState([]);  // Stores full movie data (including ratings/posters)
+  const [startIndex, setStartIndex] = useState(0);       // Index for rotating carousel
 
-  // Store full movie details including ratings and posters
-  const [movieDetails, setMovieDetails] = useState([]);
-
-  // Track which index to start displaying the 5 rotating movies
-  const [startIndex, setStartIndex] = useState(0);
-
-  // Step 1: Fetch a limited list of movies once on load
+  // Fetches a base list of 30 movies on page load
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -27,7 +22,7 @@ const LandingPage = () => {
     fetchMovies();
   }, []);
 
-  // Step 2: After movieList is loaded, fetch full data for each movie with a slight delay
+  // Once movieList loads, fetch detailed data for each movie (with delay to avoid token race)
   useEffect(() => {
     const fetchDetails = async () => {
       const promises = movieList.map(async (movie) => {
@@ -41,16 +36,16 @@ const LandingPage = () => {
       });
 
       const results = await Promise.all(promises);
-      setMovieDetails(results.filter(Boolean)); // Remove null/failed results
+      setMovieDetails(results.filter(Boolean)); // Filter out nulls
     };
 
     if (movieList.length > 0) {
-      const delay = setTimeout(() => fetchDetails(), 500); // Delay to prevent token race issue
-      return () => clearTimeout(delay); // Clear timeout on unmount
+      const delay = setTimeout(() => fetchDetails(), 500); // slight delay
+      return () => clearTimeout(delay);
     }
   }, [movieList]);
 
-  // Step 3: Auto-rotate movies every 10 seconds
+  // Automatically rotate through movies every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setStartIndex((prev) => (prev + 5) % (movieDetails.length || 1));
@@ -59,51 +54,45 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, [movieDetails]);
 
-  // Get the current batch of 5 movies to show
+  // Show only 5 movies at a time
   const currentMovies = movieDetails.slice(startIndex, startIndex + 5);
 
   return (
     <div className="landing-wrapper">
       <main className="landing-content">
-        {/* Main heading */}
+        {/* Title section */}
         <section className="text-section">
           <h1>Hardy Yuen’s <br />Fabulous Movie Searching Website</h1>
         </section>
 
-        {/* Decorative banner image */}
+        {/* Static hero image */}
         <section className="image-section">
           <img src={landingImage} alt="Landing Visual" className="landing-img" />
         </section>
 
-        {/* Subheading / tagline */}
+        {/* Tagline */}
         <h3 className="tagline">I hope you find the movie you’re after!</h3>
 
-        {/* Movie carousel section */}
+        {/* Movie cards carousel */}
         <section className="explore-section">
           <h2>Explore Movies</h2>
           <div className="movie-cards">
             {currentMovies.map((movie) => {
-              // Get IMDb rating or fallback
+              // Get IMDb rating from ratings array
               const imdbRating = movie.ratings?.find(
                 (r) => r.source === 'Internet Movie Database'
               )?.value || 'N/A';
 
-              // Get valid poster URL or use fallback image
-              const posterUrl =
-                movie.poster && movie.poster !== 'N/A'
-                  ? movie.poster
-                  : '/images/fallback-poster.png';
-
               return (
                 <div className="movie-card" key={movie.imdbID}>
-                  <img
-                    src={posterUrl}
-                    alt={`${movie.title} poster`}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/images/fallback-poster.png';
-                    }}
-                  />
+                  {/* Show poster if valid; hide if image fails to load */}
+                  {movie.poster && movie.poster !== 'N/A' && (
+                    <img
+                      src={movie.poster}
+                      alt={`${movie.title} poster`}
+                      onError={(e) => (e.target.style.display = 'none')}
+                    />
+                  )}
                   <div className="movie-title">{movie.title}</div>
                   <div className="movie-rating">⭐ {imdbRating}</div>
                 </div>

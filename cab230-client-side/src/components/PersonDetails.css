@@ -1,75 +1,81 @@
-/* Container for the entire page */
+/* Container for the entire person details page */
 .person-details-container {
-    padding: 2rem;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Person's name and years */
-  .person-details-container h2 {
-    margin-bottom: 0.25rem;
-  }
-  
-  .person-details-container p {
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  /* Table styling for role list */
-  .person-role-table {
-    width: 70%;
-    margin: 2rem auto 0 auto; 
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-  
-  .person-role-table thead {
-    background-color: #003366;
-    color: white;
-  }
-  
-  .person-role-table th,
-  .person-role-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-  }
-  
-  .person-role-table a {
-    color: #0077cc;
-    text-decoration: none;
-  }
-  
-  .person-role-table a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Pagination buttons */
-  .person-pagination {
-    margin-top: 1rem;
-    text-align: center;
-  }
-  
-  .person-pagination button {
-    margin: 0 5px;
-    padding: 0.5rem 1rem;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .person-pagination .active {
-    background-color: #003366;
-    color: white;
-  }
-  
-  .person-pagination button:not(.active) {
-    background-color: #ccc;
-    color: black;
-  }
-  
-  /* Chart container */
-  .person-chart-container {
-    width: 70%;
-    margin: 2rem auto 0 auto; /* Centered and smaller */
-    text-align: center;
-  }
-  
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+/* Styling for the person's name */
+.person-details-container h2 {
+  margin-bottom: 0.25rem;
+}
+
+/* Styling for birth/death years text */
+.person-details-container p {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Table layout for listing roles (e.g. actor, director) */
+.person-role-table {
+  width: 70%;
+  margin: 2rem auto 0 auto; /* Centered horizontally */
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+/* Header row background color and font color */
+.person-role-table thead {
+  background-color: #003366;
+  color: white;
+}
+
+/* Table cell spacing and border styling */
+.person-role-table th,
+.person-role-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+/* Link styling inside the table */
+.person-role-table a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.person-role-table a:hover {
+  text-decoration: underline;
+}
+
+/* Container for pagination buttons below the table */
+.person-pagination {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Pagination buttons styling */
+.person-pagination button {
+  margin: 0 5px;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+/* Active pagination button styling */
+.person-pagination .active {
+  background-color: #003366;
+  color: white;
+}
+
+/* Inactive pagination button styling */
+.person-pagination button:not(.active) {
+  background-color: #ccc;
+  color: black;
+}
+
+/* Bar chart container for IMDb rating visualization */
+.person-chart-container {
+  width: 70%;
+  margin: 2rem auto 0 auto;
+  text-align: center;
+}

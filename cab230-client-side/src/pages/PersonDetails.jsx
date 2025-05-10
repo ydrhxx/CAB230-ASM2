@@ -2,34 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import '../components/PersonDetails.css'; 
-import Chart from 'chart.js/auto'; // Required for Bar chart setup
+import Chart from 'chart.js/auto'; 
+import { authFetch } from '../components/authFetch';
 
 const PersonDetails = () => {
-  // Get person ID from route params and set up navigation
+  // Get person ID from the route parameters and set up navigation
   const { personID } = useParams(); 
   const navigate = useNavigate();
 
-  // Component state
-  const [person, setPerson] = useState(null);       // Holds fetched person data
-  const [error, setError] = useState('');            // Holds any error messages
-  const [currentPage, setCurrentPage] = useState(1); // For pagination
+  // State variables for person data, error messages, and pagination
+  const [person, setPerson] = useState(null);       
+  const [error, setError] = useState('');            
+  const [currentPage, setCurrentPage] = useState(1); 
 
-  const bearerToken = localStorage.getItem('bearerToken'); // Token for auth-required endpoint
+  // Get the saved bearer token from localStorage for authenticated API access
+  const bearerToken = localStorage.getItem('bearerToken'); 
 
-  // Fetch person details on load
+  // Fetch person details from API when component mounts or personID changes
   useEffect(() => {
     const fetchPerson = async () => {
       try {
-        const res = await fetch(`http://4.237.58.241:3000/people/${personID}`, {
-          headers: {
-            Authorization: `Bearer ${bearerToken}`, // Include bearer token
-          },
-        });
+        const res = await authFetch(`http://4.237.58.241:3000/people/${personID}`);
 
         const data = await res.json();
         console.log('Fetched:', data);
 
-        // Handle possible errors
+        // Handle possible error responses
         if (!res.ok) {
           if (res.status === 401) {
             setError('You must be logged in to view this page.');
@@ -41,7 +39,8 @@ const PersonDetails = () => {
           return;
         }
 
-        setPerson(data); // Set person data
+        // If successful, update person state
+        setPerson(data);
       } catch (err) {
         console.error('Fetch failed:', err);
         setError('Something went wrong.');
@@ -49,9 +48,9 @@ const PersonDetails = () => {
     };
 
     fetchPerson();
-  }, [personID, bearerToken]);
+  }, [personID]);
 
-  // Show error message with login redirect if needed
+  // If there's an error, show a message and optionally redirect to login
   if (error) {
     return (
       <div style={{ textAlign: 'center', marginTop: '2rem' }}>
@@ -63,23 +62,23 @@ const PersonDetails = () => {
     );
   }
 
-  // Show loading state until data is fetched
+  // Show loading message while fetching data
   if (!person) return <p style={{ textAlign: 'center' }}>Loading...</p>;
 
-  // Setup for paginated roles display
+  // Set up pagination for person roles
   const roles = Array.isArray(person.roles) ? person.roles : [];
   const rolesPerPage = 10;
   const start = (currentPage - 1) * rolesPerPage;
   const paginatedRoles = roles.slice(start, start + rolesPerPage);
   const totalPages = Math.ceil(roles.length / rolesPerPage);
 
-  // Prepare IMDb rating distribution buckets
+  // Prepare rating distribution for the bar chart
   const ratingRanges = {
     '0-1': 0, '1-2': 0, '2-3': 0, '3-4': 0, '4-5': 0,
     '5-6': 0, '6-7': 0, '7-8': 0, '8-9': 0, '9-10': 0,
   };
 
-  // Count ratings into ranges
+  // Count IMDb ratings into their respective buckets
   roles.forEach((role) => {
     const rating = role.imdbRating;
     if (typeof rating === 'number') {
@@ -90,7 +89,7 @@ const PersonDetails = () => {
     }
   });
 
-  // Prepare chart data
+  // Define data for the chart component
   const chartData = {
     labels: Object.keys(ratingRanges),
     datasets: [
@@ -104,10 +103,11 @@ const PersonDetails = () => {
 
   return (
     <div className="person-details-container">
-        <h2>{person.name}</h2>
-        <p>{person.birthYear || 'N/A'} - {person.deathYear || 'Present'}</p>
+      {/* Person name and life dates */}
+      <h2>{person.name}</h2>
+      <p>{person.birthYear || 'N/A'} - {person.deathYear || 'Present'}</p>
 
-      {/* Role list table */}
+      {/* Table of roles the person has worked on */}
       <table className="person-role-table">
         <thead>
           <tr>
@@ -119,10 +119,10 @@ const PersonDetails = () => {
         </thead>
         <tbody>
           {paginatedRoles.map((role, index) => (
-            <tr>
+            <tr key={index}>
               <td>{role.category}</td>
               <td>
-                {/* Fix: Link properly to /movies/:imdbID instead of /movie */}
+                {/* Link to the movie details page */}
                 <Link to={`/movies/${role.movieId}`} style={{ color: '#0077cc' }}>
                   {role.movieName}
                 </Link>
@@ -134,25 +134,26 @@ const PersonDetails = () => {
         </tbody>
       </table>
 
-      {/* Pagination buttons */}
-        <div className="person-pagination">
+      {/* Pagination controls */}
+      <div className="person-pagination">
         {Array.from({ length: totalPages }, (_, i) => (
-            <button
+          <button
             key={i + 1}
             className={currentPage === i + 1 ? 'active' : ''}
             onClick={() => setCurrentPage(i + 1)}
-            >
+          >
             {i + 1}
-            </button>
+          </button>
         ))}
-        </div>
+      </div>
 
-        <div className="person-chart-container">
+      {/* Bar chart showing IMDb rating distribution */}
+      <div className="person-chart-container">
         <h3>IMDb Ratings at a Glance</h3>
         <Bar data={chartData} />
-        </div>
+      </div>
     </div>
-    );
+  );
 };
 
 export default PersonDetails;

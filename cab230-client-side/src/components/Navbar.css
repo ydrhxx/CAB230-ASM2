@@ -1,17 +1,23 @@
+/* Main navbar container */
 .navbar {
-    background-color: #222;
-    padding: 1rem;
-    display: flex;
-    gap: 1rem;
-  }
-  .navbar a, .navbar span, .navbar button {
-    color: white;
-    text-decoration: none;
-  }
-  .navbar button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-  }
-  
+  background-color: #222;   /* Dark background for contrast */
+  padding: 1rem;            /* Spacing around the navbar content */
+  display: flex;            /* Flex layout to align items horizontally */
+  gap: 1rem;                /* Space between links/buttons */
+}
+
+/* Style shared by links, text spans, and logout button */
+.navbar a,
+.navbar span,
+.navbar button {
+  color: white;             /* White text for readability */
+  text-decoration: none;    /* Remove underline from links */
+}
+
+/* Specific styles for logout button */
+.navbar button {
+  background: none;         /* No background so it blends with navbar */
+  border: none;             /* Remove default button border */
+  color: white;             /* Ensure text stays white */
+  cursor: pointer;          /* Pointer cursor on hover */
+}

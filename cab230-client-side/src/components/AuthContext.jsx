@@ -1,49 +1,61 @@
-// src/components/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Create the authentication context
 const AuthContext = createContext();
 
-// AuthProvider component wraps the app and provides auth state
+// Provider to wrap around the app
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);       // Holds user object (e.g. { email: 'user@example.com' })
-  const [token, setToken] = useState(null);     // Holds the JWT bearer token
+  const [user, setUser] = useState(null);     // Stores user info (e.g. { email })
+  const [token, setToken] = useState(null);   // Stores current bearer token
 
-  // On component mount, load user and token from localStorage
+  // Load stored credentials on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    const savedToken = localStorage.getItem('bearerToken');
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedToken = localStorage.getItem('bearerToken');
 
-    if (savedUser && savedToken) {
-      try {
-        setUser(JSON.parse(savedUser));
-        setToken(savedToken);
-      } catch (err) {
-        console.error('Failed to parse stored user:', err);
+      if (storedUser && storedToken) {
+        setUser(storedUser);
+        setToken(storedToken);
       }
+    } catch (err) {
+      console.error('Error loading auth data:', err);
     }
   }, []);
 
-  // Login method to store user and token
+  // Login: saves user and tokens
   const login = (userData, bearerToken) => {
-    setUser(userData); // userData should be an object like { email: 'user@example.com' }
+    setUser(userData);
     setToken(bearerToken);
 
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('bearerToken', bearerToken);
   };
 
-  // Logout method to clear session
-  const logout = () => {
+  // Logout: calls backend and clears tokens
+  const logout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    try {
+      if (refreshToken) {
+        await fetch('http://4.237.58.241:3000/user/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken }),
+        });
+      }
+    } catch (err) {
+      console.warn('Logout failed or token already expired.');
+    }
+
+    // Clear all tokens regardless
     setUser(null);
     setToken(null);
-
     localStorage.removeItem('user');
     localStorage.removeItem('bearerToken');
     localStorage.removeItem('refreshToken');
   };
 
-  // Provide user, token, and auth functions to the rest of the app
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
@@ -51,5 +63,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the AuthContext
+// Export hook to access auth context
 export const useAuth = () => useContext(AuthContext);

@@ -35,7 +35,7 @@ function App() {
           {/* Individual movie details */}
           <Route path="/movies/:imdbID" element={<MovieDetails />} />
 
-          {/* Person (actor/director) details */}
+          {/* Person details */}
           <Route path="/people/:personID" element={<PersonDetails />} />
 
           {/* Register and login pages */}

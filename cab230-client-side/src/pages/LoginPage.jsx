@@ -1,18 +1,16 @@
-// src/pages/LoginPage.jsx
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../components/AuthContext';
-import '../components/LoginPage.css'; // Make sure this path is correct
+import '../components/LoginPage.css';
 
 const LoginPage = () => {
-  // Local state for input fields and error display
+  // Form input state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // Grab login method from context
+  const { login } = useAuth();
 
   // Handle form submission
   const handleLogin = async (e) => {
@@ -20,43 +18,38 @@ const LoginPage = () => {
     setError('');
 
     try {
+      // Make login API request
       const res = await fetch('http://4.237.58.241:3000/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          password,
-          longExpiry: true, // Use long expiry for development
-        }),
+        body: JSON.stringify({ email, password }) 
       });
 
       const data = await res.json();
 
-      if (!res.ok) {
+      // Handle failure
+      if (!res.ok || !data.bearerToken?.token) {
         setError(data.message || 'Login failed');
         return;
       }
 
-      // Save login info into context and localStorage
+      // Save auth details
       login({ email }, data.bearerToken.token);
+      localStorage.setItem('bearerToken', data.bearerToken.token);
       localStorage.setItem('refreshToken', data.refreshToken.token);
 
-      // Terminal debug
-      console.log('Login successful');
-      console.log('Logged in user:', email);
-      console.log('Bearer token:', data.bearerToken.token);
-
-      // Redirect after login
+      // Redirect to homepage
       navigate('/');
     } catch (err) {
       console.error('Login error:', err);
-      setError('Something went wrong.');
+      setError('Something went wrong. Please try again.');
     }
   };
 
   return (
     <div className="login-page">
       <h2>Login</h2>
+
       <form onSubmit={handleLogin}>
         <label>Email:</label>
         <input
@@ -76,11 +69,9 @@ const LoginPage = () => {
 
         <button type="submit">Login</button>
 
-        {/* Error message if login fails */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
 
-      {/* Navigation to register page */}
       <p className="link-message">
         Don’t have an account? <Link to="/register">Register</Link>
       </p>
